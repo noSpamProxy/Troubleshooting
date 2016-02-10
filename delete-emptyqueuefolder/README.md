@@ -2,7 +2,7 @@
 This tiny PowerShell Script determins the Queuefolder path, deletes every empty Queuefolder and restarts the Gateway Role afterwards.
 
 ###Usage
-delete-emptyqueuefolder.ps1
+`.\delete-emptyqueuefolder.ps1`
 
 No options are available.
 
