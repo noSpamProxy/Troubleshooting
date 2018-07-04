@@ -29,7 +29,7 @@ PARAMETERS
         The filename of a public certificate.
 
     -Thumbprint <String>
-        The thumbprint of a certifacate stored in NoSpamProxy. The thumbprint can be obtained by calling Get-NspCertificate
+        The thumbprint of a certificate stored in NoSpamProxy. The thumbprint can be obtained by calling Get-NspCertificate
 
     <CommonParameters>
         This cmdlet supports the common parameters: Verbose, Debug,
