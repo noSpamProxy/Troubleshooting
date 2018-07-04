@@ -1,6 +1,6 @@
 # Publish-CertificateToOpenKeys
 
-```ps
+```
 Get-Help .\Publish-CertificateToOpenKeys.ps1 -Detailed
 
 NAME
