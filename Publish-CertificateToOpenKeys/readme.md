@@ -1,9 +1,5 @@
 # Publish-CertificateToOpenKeys
 
-```PS
-Get-Help .\Publish-CertificateToOpenKeys.ps1 -Detailed
-```
-
 ## Description
 
 Publish one or more certificates to [OpenKeys](https://openkeys.de)
