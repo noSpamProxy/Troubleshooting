@@ -1,7 +1,5 @@
 # Publish-CertificateToOpenKeys
 
-## Description
-
 Publish one or more certificates to [OpenKeys](https://openkeys.de)
 
 ## Syntax
