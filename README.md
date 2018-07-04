@@ -6,3 +6,6 @@ This repository contains PowerShell Scripts to troubleshoot or fix problems in N
 
 This tiny PowerShell Script determins the Queuefolder path, deletes every empty Queuefolder and restarts the Gateway Role afterwards.
 
+## [Publish-CertificateToOpenKeys](Publish-CertificateToOpenKeys/readme.md)
+
+This script publishes certificate
