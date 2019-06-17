@@ -1,4 +1,4 @@
-# Send-BlockReportToUsers.ps1
+# CleanupDebugLogs.ps1
 
 This script can be used to delete all files and folders which are older than a specified number of days.
 Please pay attention before usage. Every file or folder in the specified path will be removed.
