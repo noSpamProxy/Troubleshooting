@@ -2,7 +2,7 @@
 
 This repository contains PowerShell Scripts to troubleshoot or fix problems in NoSpamProxy installations.
 
-## [CleanupDebugLogs] (CleanupDebugLogs/readme.md)
+## [CleanupDebugLogs](CleanupDebugLogs/readme.md)
 
 ## [Delete-EmptyQueueFolder](Delete-EmptyQueueFolder/readme.md)
 
