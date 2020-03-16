@@ -1,4 +1,4 @@
-# Get-NspLicenseReport.ps1
+# Check-NspCertificates.ps1
 
 Outputs the state of a certificate and its chain to the console.
 It is only possible to check certificates which are imported into the NoSpamProxy.
