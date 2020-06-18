@@ -17,3 +17,7 @@ This tiny PowerShell Script determins the Queuefolder path, deletes every empty 
 ## [Publish-CertificateToOpenKeys](Publish-CertificateToOpenKeys/readme.md)
 
 This script publishes certificate
+
+## [Export-MyNspPublicCertificates](Export-MyNspPublicCertificates/Readme.md)
+
+This script exports your own valid public certificates.
