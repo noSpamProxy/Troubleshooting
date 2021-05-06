@@ -7,7 +7,7 @@ The validation is done for each connected gateway role.
 ## Usage 
 
 ```ps
-Get-NspCertificates.ps1 -Thumbprint
+Check-NspCertificates.ps1 -Thumbprint
 ```
 
 ## Parameters
@@ -17,5 +17,5 @@ Get-NspCertificates.ps1 -Thumbprint
 ## Example
 
 ```ps
-.\Get-NspCertificates.ps1 -Thumbprint 0F4F9209E172B6D81022C0219CF253EFD29689F6
+.\Check-NspCertificates.ps1 -Thumbprint 0F4F9209E172B6D81022C0219CF253EFD29689F6
 ```
