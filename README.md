@@ -10,6 +10,10 @@ This script can be used to delete all files and folders which are older than a s
 
 Check a certificate and its chain by thumbprint.
 
+## [Check-NspPrivateCertificates](https://github.com/noSpamProxy/Troubleshooting/tree/master/Check-NspPrivateCertificates)
+
+Validate all private certificates found in the NoSpamProxy certificate store.
+
 ## [Delete-EmptyQueueFolder](Delete-EmptyQueueFolder/readme.md)
 
 This tiny PowerShell Script determins the Queuefolder path, deletes every empty Queuefolder and restarts the Gateway Role afterwards.
