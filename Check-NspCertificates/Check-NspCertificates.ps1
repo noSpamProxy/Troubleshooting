@@ -8,6 +8,9 @@
   Only into the NoSpamProxy imported certificates can be checked.
   The validation is done for each connected gateway role.
 
+.PARAMETER TenantPrimaryDomain
+  Connect to a specific tenant using the given primary domain name.
+
 .PARAMETER Thumbprint
   Set the thumbprint of the certificate which should be checked.
 
@@ -27,6 +30,9 @@
 
 .EXAMPLE
   .\CheckNspCertificates.ps1 -Thumbprint 0F4F9209E172B6D81022C0219CF253EFD29689F6
+
+.EXAMPLE
+  .\CheckNspCertificates.ps1 -Thumbprint 0F4F9209E172B6D81022C0219CF253EFD29689F6 -TenantPrimaryDomain "example.com"
 #>
 param (
 	[Parameter(Mandatory = $true)][string] $Thumbprint,
