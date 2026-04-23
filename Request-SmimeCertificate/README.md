@@ -6,13 +6,14 @@ API — the same endpoint used by the NoSpamProxy management console.
 ## How it works
 
 1. Connects to NoSpamProxy using `Connect-Nsp` (Windows auth, credentials, or API key).
-2. Resolves the certificate enrollment provider by **exact name** (`-ProviderName`).
-3. Loads all local users via `Get-NspUser` and inspects each enabled mail address.
-4. **Skips** addresses with no certificate, or whose certificates do not match `-Issuer` (if given).
-5. **Selects** addresses where the most recent matching certificate has `ValidFrom >= ValidFromDate`.
+2. If NSP v14+ in provider mode is detected and `-PrimaryDomain` is supplied, reconnects with tenant context.
+3. Resolves the certificate enrollment provider by **exact name** (`-ProviderName`).
+4. Loads all local users via `Get-NspUser` (or tenant users if in provider mode) and inspects each enabled mail address.
+5. **Skips** addresses with no certificate, or whose certificates do not match `-Issuer` (if given).
+6. **Selects** addresses where the most recent matching certificate has `ValidFrom >= ValidFromDate`.
    If `-ValidTo` is also given, the cert's `ValidFrom` must additionally satisfy `ValidFrom <= ValidTo`.
-6. Prints a table of all selected addresses so you can verify before anything is submitted.
-7. Submits a batch `RequestCertificates` WCF call for all qualifying addresses.
+7. Prints a table of all selected addresses so you can verify before anything is submitted.
+8. Submits a batch `RequestCertificates` WCF call for all qualifying addresses.
 
 Enrollment info type (SwissSign, WindowsCA, GlobalSign, DTrust, DigiCert, Sectigo) is selected
 automatically based on the provider's concrete .NET type.
@@ -22,6 +23,7 @@ automatically based on the provider's concrete .NET type.
 - PowerShell 5.1 or later
 - NoSpamProxy PowerShell module installed (`NoSpamProxy*` on `$env:PSModulePath`)
 - At least one SMIME certificate enrollment provider configured in NoSpamProxy
+- For multi-tenant deployments (provider mode): NoSpamProxy v14 or later with provider mode enabled
 
 ## Parameters
 
@@ -82,6 +84,28 @@ Only considers certificates whose issuer DN contains `SwissSign`. Addresses with
 Connects to NSP, validates the provider name, applies all filters, then prints the full list of affected
 addresses (with display name, newest cert `ValidFrom`, and issuer DN) and the total count.
 No certificate request is submitted.
+
+### Multi-tenant (provider mode) — iterate over all tenants
+
+When NoSpamProxy is running in **provider mode** (multi-tenant), each script invocation processes a single
+tenancy. To request certificates for multiple tenants, invoke the script once per tenant:
+
+```powershell
+$tenants = @("contoso.com", "fabrikam.com", "litware.com")
+foreach ($tenant in $tenants) {
+    Write-Host "Processing tenant: $tenant"
+    .\Request-SmimeCertificate.ps1 `
+        -ValidFromDate 2026-01-01 `
+        -ProviderName "SwissSign Gold ID" `
+        -PrimaryDomain $tenant `
+        -Verbose
+}
+```
+
+**Key points:**
+- The `-PrimaryDomain` parameter tells the script which tenant to connect to
+- The script automatically detects provider mode and reconnects with the specified tenant context
+- Each invocation is independent: it connects, processes all users in that tenant, and exits
 
 ## Error handling
 

@@ -47,6 +47,12 @@
     When set, TLS certificate validation errors on the connection to the
     NoSpamProxy Intranet Role are suppressed.
 
+.PARAMETER PrimaryDomain
+    Optional. The primary domain of the tenant to process. Only needed when NoSpamProxy
+    is running in provider mode (multi-tenant). If omitted, the script connects to the
+    default tenant. For multi-tenant environments, the caller should loop over all
+    tenants and invoke the script once per tenant with the appropriate PrimaryDomain.
+
 .EXAMPLE
     .\Request-SmimeCertificate.ps1 -ValidFromDate 2026-01-01 -ProviderName "SwissSign Gold ID"
     Requests new certificates for all addresses that have any cert with ValidFrom >= 2026-01-01.
@@ -64,7 +70,14 @@
         -NspUrl https://nsp-mgmt.contoso.local:6060 `
         -ApiKey (Read-Host -AsSecureString 'API Key')
     Connects to a remote NSP instance with API key authentication.
-#>
+.EXAMPLE
+    $tenants = @("contoso.com", "fabrikam.com", "litware.com")
+    foreach ($tenant in $tenants) {
+        .\Request-SmimeCertificate.ps1 -ValidFromDate 2026-01-01 -ProviderName "SwissSign Gold ID" `
+            -PrimaryDomain $tenant
+    }
+    In a provider mode deployment, iterates over multiple tenants and requests certificates
+    for each one separately.#>
 
 [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 param(
@@ -90,7 +103,10 @@ param(
     [SecureString]$ApiKey,
 
     [Parameter(Mandatory = $false)]
-    [switch]$IgnoreServerCertificateErrors
+    [switch]$IgnoreServerCertificateErrors,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PrimaryDomain
 )
 
 Set-StrictMode -Version Latest
@@ -110,6 +126,10 @@ if (-not $nspModule) {
 Import-Module $nspModule.Name -Force -ErrorAction Stop
 Write-Verbose "Imported module: $($nspModule.Name) v$($nspModule.Version)"
 
+# Detect NSP version from registry (for multi-tenant provider mode support)
+$nspVersion = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\NoSpamProxy\Components' -ErrorAction SilentlyContinue).'Intranet Role'
+Write-Verbose "NoSpamProxy Intranet Role version (registry): $nspVersion"
+
 # ---------------------------------------------------------------------------
 # 2. Connect to NoSpamProxy
 # ---------------------------------------------------------------------------
@@ -123,6 +143,20 @@ $urlDisplay = if ($NspUrl) { $NspUrl.ToString() } else { 'https://localhost:6060
 Write-Host "Connecting to NoSpamProxy at $urlDisplay ..."
 Connect-Nsp @connectParams
 Write-Host 'Connected.'
+
+# In provider mode, reconnect with the specified PrimaryDomain if provided
+if ($nspVersion -gt '14.0') {
+    $isProviderMode = Get-NspIsProviderModeEnabled
+    if ($isProviderMode) {
+        if ([string]::IsNullOrEmpty($PrimaryDomain)) {
+            Write-Warning 'Provider mode is enabled but -PrimaryDomain was not provided. Using default tenant.'
+        } else {
+            Write-Verbose "Provider mode detected. Reconnecting for tenant: $PrimaryDomain"
+            Connect-Nsp @connectParams -PrimaryDomain $PrimaryDomain
+            Write-Host "Connected to tenant: $PrimaryDomain"
+        }
+    }
+}
 
 # ---------------------------------------------------------------------------
 # 3. Retrieve JWT from Connect-Nsp's in-process token cache and compile
